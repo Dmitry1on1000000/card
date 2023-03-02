@@ -1,24 +1,14 @@
-import { CheckAuth } from 'Components/Common/CheckAuth';
 import { PostsList } from 'Components/PostsList';
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { PostsEffects, PostsSelectors } from 'Store';
 
 export const Posts = () => {
+  const loading = useSelector(PostsSelectors.getPostLoading);
+  const dispatch = useDispatch();
+  const postsData = useSelector(PostsSelectors.getPostData);
   useEffect(() => {
-    const handler = () => console.log('click on post page');
-
-    document.addEventListener('click', handler);
-
-    console.log('Posts MOUNT');
-
-    return () => {
-      console.log('Posts UNMOUNT');
-      document.removeEventListener('click', handler);
-    };
+    dispatch(PostsEffects.fetchPosts());
   }, []);
-
-  return (
-    <CheckAuth>
-      <PostsList />
-    </CheckAuth>
-  );
+  return loading ? <h1>Loading....</h1> : <PostsList postsData={postsData} />;
 };
